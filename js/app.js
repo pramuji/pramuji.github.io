@@ -19,6 +19,43 @@
   let lastPayment = null;
   let cart = JSON.parse(localStorage.getItem("atomyCart") || "{}");
 
+  function slugify(name) {
+    return String(name).toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+  function setMeta(title, desc) {
+    document.title = title;
+    const md = document.querySelector('meta[name="description"]');
+    if (md && desc) md.setAttribute("content", desc.slice(0, 160));
+    const ogt = document.querySelector('meta[property="og:title"]');
+    if (ogt) ogt.setAttribute("content", title);
+    const ogd = document.querySelector('meta[property="og:description"]');
+    if (ogd && desc) ogd.setAttribute("content", desc.slice(0, 180));
+  }
+  function injectItemList() {
+    const old = document.getElementById("seo-itemlist");
+    if (old) old.remove();
+    const items = (window.PRODUCTS || []).slice(0, 40).map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: "Atomy " + p.name,
+      url: "https://katalogatomy.online/?produk=" + slugify(p.name),
+      description: p.manfaat
+    }));
+    const el = document.createElement("script");
+    el.type = "application/ld+json";
+    el.id = "seo-itemlist";
+    el.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "Katalog produk Atomy Indonesia",
+      numberOfItems: (window.PRODUCTS || []).length,
+      itemListElement: items
+    });
+    document.head.appendChild(el);
+  }
+
   function waUrl(text) {
     return "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(text);
   }
@@ -68,6 +105,10 @@
 
   q.addEventListener("input", () => {
     query = q.value.trim().toLowerCase();
+    const url = new URL(location.href);
+    if (query) url.searchParams.set("q", q.value.trim());
+    else url.searchParams.delete("q");
+    history.replaceState(null, "", url.pathname + url.search);
     render();
   });
 
@@ -129,6 +170,8 @@
     const msg = "Halo, saya tertarik dengan produk Atomy " + p.name + " dari katalogatomy.online. Boleh info stok, harga, dan cara pemesanan?";
     document.getElementById("mwa").href = waUrl(msg);
     modal.classList.add("open");
+    history.replaceState(null, "", "?produk=" + slugify(p.name));
+    setMeta(p.name + " Atomy | Manfaat, Cara Pakai & Dosis", p.manfaat + " " + p.dosis);
   }
 
   function renderCart() {
@@ -215,13 +258,7 @@
       const list = await window.RO.cost(destId.value, weightGram(), courier);
       const pick = window.RO.pick(list);
       if (pick) {
-        liveOngkir = {
-          cost: pick.cost,
-          kg: kg,
-          etd: pick.etd || "-",
-          service: pick.service,
-          name: pick.name
-        };
+        liveOngkir = { cost: pick.cost, kg: kg, etd: pick.etd || "-", service: pick.service, name: pick.name };
       }
     } catch (err) {
       liveOngkir = null;
@@ -357,7 +394,14 @@
     window.open(waUrl(msg), "_blank", "noopener");
   };
 
-  document.getElementById("close").onclick = () => modal.classList.remove("open");
+  document.getElementById("close").onclick = () => {
+    modal.classList.remove("open");
+    history.replaceState(null, "", location.pathname + (q.value ? ("?q=" + encodeURIComponent(q.value.trim())) : ""));
+    setMeta(
+      "Katalog Produk Atomy Indonesia | Manfaat, Cara Pakai & Dosis HemoHIM",
+      "Katalog Atomy Indonesia: manfaat, cara pakai, dan dosis HemoHIM, vitamin C Colorfood, noni fermentasi, ginseng merah, omega-3, dan Absolute CellActive."
+    );
+  };
   modal.addEventListener("click", (e) => {
     if (e.target === modal) modal.classList.remove("open");
   });
@@ -368,6 +412,17 @@
     }
   });
 
+  const params = new URLSearchParams(location.search);
+  if (params.get("q")) {
+    q.value = params.get("q");
+    query = q.value.trim().toLowerCase();
+  }
   render();
   renderCart();
+  injectItemList();
+  const want = (params.get("produk") || params.get("p") || "").toLowerCase();
+  if (want) {
+    const hit = window.PRODUCTS.find((p) => slugify(p.name) === want || String(p.id) === want);
+    if (hit) open(hit.id);
+  }
 })();
