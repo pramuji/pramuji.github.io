@@ -120,7 +120,7 @@ h1 em { font-style: italic; color: #8a6d2d; }
 
 .grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 18px; padding-bottom: 70px;
+  gap: 18px; padding-bottom: 40px;
 }
 .card {
   background: #fff; border: 1px solid var(--line); border-radius: 22px;
@@ -155,6 +155,34 @@ h1 em { font-style: italic; color: #8a6d2d; }
 }
 
 .empty { text-align: center; padding: 50px 0; color: var(--muted); }
+
+.seo-block {
+  margin: 8px 0 56px;
+  padding: 28px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+}
+.seo-block h2 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(26px, 3.4vw, 36px);
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+.seo-block p { color: #2c3e50; margin-bottom: 12px; }
+.seo-block ul { margin: 0 0 16px 18px; color: #2c3e50; }
+.faq details {
+  border-top: 1px solid var(--line);
+  padding: 12px 0;
+}
+.faq summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--navy);
+  list-style: none;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq details p { margin: 8px 0 0; color: var(--muted); }
 
 .modal {
   position: fixed; inset: 0; background: rgba(12, 28, 43, .55);
@@ -309,4 +337,5 @@ footer {
   .wa-float span { display: none; }
   .wa-float { padding: 14px; }
   .cart-btn { padding: 9px 10px; font-size: 12px; }
+  .seo-block { padding: 20px; }
 }
