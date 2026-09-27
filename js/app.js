@@ -135,10 +135,10 @@
     grid.innerHTML = list.map((p, i) => {
       const full = p.img.replace(/\.jpg$/, ".webp");
       const sm = p.img.replace(/\.jpg$/, "-sm.webp");
-      const hint = i < 2 ? 'fetchpriority="high" decoding="async"' : 'loading="lazy" decoding="async"';
+      const hint = i < 4 ? 'fetchpriority="high" decoding="async"' : 'loading="lazy" decoding="async"';
       return `
       <article class="card" data-id="${p.id}">
-        <div class="thumb"><img src="${sm}" srcset="${sm} 320w, ${full} 640w" sizes="(max-width: 700px) 46vw, 270px" width="640" height="640" alt="Atomy ${p.name} — ${p.tag}" ${hint}></div>
+        <div class="thumb"><img src="${sm}" srcset="${sm} 320w, ${full} 640w" sizes="(min-width: 900px) 280px, 46vw" width="640" height="640" alt="Atomy ${p.name} — ${p.tag}" ${hint}></div>
         <div class="body">
           <div class="tag">${p.tag}</div>
           <h2>${p.name}</h2>

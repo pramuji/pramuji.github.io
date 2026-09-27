@@ -6,13 +6,13 @@
   --cream: #f7f3ea;
   --paper: #fffcf7;
   --ink: #1c2833;
-  --muted: #5d6d7e;
+  --muted: #3a4a58;
   --line: #e6dfd2;
   --ok: #1e6b4f;
   --shadow: 0 18px 50px rgba(12, 59, 94, .08);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scrollbar-gutter: stable; }
 body {
   font-family: "Segoe UI", system-ui, sans-serif;
   color: var(--ink);
@@ -84,7 +84,7 @@ header {
   height: 20px;
   margin-left: 4px;
   border-radius: 999px;
-  background: var(--gold);
+  background: var(--gold-2);
   color: var(--navy);
   font-size: 11px;
 }
@@ -97,7 +97,10 @@ header {
   color: var(--gold); font-weight: 700; letter-spacing: .16em;
   text-transform: uppercase; font-size: 12px; margin-bottom: 8px;
 }
-h1 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(32px, 4.2vw, 46px); line-height: 1.05; color: var(--navy); }
+h1 { font-family: Georgia, "Times New Roman", serif; font-size: 40px; line-height: 1.1; min-height: 2.2em; color: var(--navy); }
+@media (max-width: 700px) {
+  h1 { font-size: 32px; min-height: 3.3em; }
+}
 h1 em { font-style: italic; color: #6b4f16; }
 .hero p.lead { margin-top: 10px; color: var(--muted); font-size: 16px; max-width: 52ch; }
 .stats { display: flex; gap: 18px; margin-top: 14px; }
@@ -111,9 +114,7 @@ h1 em { font-style: italic; color: #6b4f16; }
 }
 .hero-strip img {
   width: 100%;
-  aspect-ratio: 1;
-  height: auto;
-  max-height: 140px;
+  height: 120px;
   object-fit: contain;
   background: #fff;
   border: 1px solid var(--line);
