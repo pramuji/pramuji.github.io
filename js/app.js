@@ -132,19 +132,24 @@
       grid.innerHTML = '<p class="empty">Tidak ada produk yang cocok.</p>';
       return;
     }
-    grid.innerHTML = list.map((p) => `
+    grid.innerHTML = list.map((p, i) => {
+      const full = p.img.replace(/\.jpg$/, ".webp");
+      const sm = p.img.replace(/\.jpg$/, "-sm.webp");
+      const hint = i < 2 ? 'fetchpriority="high" decoding="async"' : 'loading="lazy" decoding="async"';
+      return `
       <article class="card" data-id="${p.id}">
-        <div class="thumb"><img src="${p.img}" alt="Atomy ${p.name} — ${p.tag}" loading="lazy"></div>
+        <div class="thumb"><img src="${sm}" srcset="${sm} 320w, ${full} 640w" sizes="(max-width: 700px) 46vw, 270px" width="640" height="640" alt="Atomy ${p.name} — ${p.tag}" ${hint}></div>
         <div class="body">
           <div class="tag">${p.tag}</div>
-          <h3>${p.name}</h3>
+          <h2>${p.name}</h2>
           <p class="excerpt">${p.manfaat}</p>
           <div class="card-actions">
             <span class="more">Detail →</span>
             <button type="button" class="add-mini" data-add="${p.id}">Pesan</button>
           </div>
         </div>
-      </article>`).join("");
+      </article>`;
+    }).join("");
     grid.querySelectorAll(".card").forEach((el) => {
       el.onclick = () => open(+el.dataset.id);
     });
