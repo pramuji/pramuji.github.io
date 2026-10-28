@@ -21,6 +21,8 @@
 
   function slugify(name) {
     return String(name).toLowerCase()
+      .replace(/&/g, " ")
+      .replace(/\+/g, "")
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
   }
@@ -36,11 +38,11 @@
   function injectItemList() {
     const old = document.getElementById("seo-itemlist");
     if (old) old.remove();
-    const items = (window.PRODUCTS || []).slice(0, 40).map((p, i) => ({
+    const items = (window.PRODUCTS || []).map((p, i) => ({
       "@type": "ListItem",
       position: i + 1,
       name: "Atomy " + p.name,
-      url: "https://katalogatomy.online/?produk=" + slugify(p.name),
+      url: "https://katalogatomy.online/produk/" + slugify(p.name) + "/",
       description: p.manfaat
     }));
     const el = document.createElement("script");
@@ -141,7 +143,7 @@
         <div class="thumb"><img src="${sm}" srcset="${sm} 320w, ${full} 640w" sizes="(min-width: 900px) 280px, 46vw" width="640" height="640" alt="Atomy ${p.name} — ${p.tag}" ${hint}></div>
         <div class="body">
           <div class="tag">${p.tag}</div>
-          <h2>${p.name}</h2>
+          <h2><a href="/produk/${slugify(p.name)}/">${p.name}</a></h2>
           <p class="excerpt">${p.manfaat}</p>
           <div class="card-actions">
             <span class="more">Detail →</span>
@@ -151,7 +153,10 @@
       </article>`;
     }).join("");
     grid.querySelectorAll(".card").forEach((el) => {
-      el.onclick = () => open(+el.dataset.id);
+      el.onclick = (e) => {
+        if (e.target.closest("a")) return;
+        open(+el.dataset.id);
+      };
     });
     grid.querySelectorAll("[data-add]").forEach((btn) => {
       btn.onclick = (e) => {
@@ -174,8 +179,9 @@
     document.getElementById("mdosis").textContent = p.dosis;
     const msg = "Halo, saya tertarik dengan produk Atomy " + p.name + " dari katalogatomy.online. Boleh info stok, harga, dan cara pemesanan?";
     document.getElementById("mwa").href = waUrl(msg);
+    const full = document.getElementById("mfull");
+    if (full) full.href = "/produk/" + slugify(p.name) + "/";
     modal.classList.add("open");
-    history.replaceState(null, "", "?produk=" + slugify(p.name));
     setMeta(p.name + " Atomy | Manfaat, Cara Pakai & Dosis", p.manfaat + " " + p.dosis);
   }
 
@@ -428,6 +434,6 @@
   const want = (params.get("produk") || params.get("p") || "").toLowerCase();
   if (want) {
     const hit = window.PRODUCTS.find((p) => slugify(p.name) === want || String(p.id) === want);
-    if (hit) open(hit.id);
+    if (hit) location.replace("/produk/" + slugify(hit.name) + "/");
   }
 })();
