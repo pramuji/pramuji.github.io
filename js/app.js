@@ -107,10 +107,7 @@
 
   q.addEventListener("input", () => {
     query = q.value.trim().toLowerCase();
-    const url = new URL(location.href);
-    if (query) url.searchParams.set("q", q.value.trim());
-    else url.searchParams.delete("q");
-    history.replaceState(null, "", url.pathname + url.search);
+    if (location.search) history.replaceState(null, "", location.pathname);
     render();
   });
 
@@ -407,7 +404,7 @@
 
   document.getElementById("close").onclick = () => {
     modal.classList.remove("open");
-    history.replaceState(null, "", location.pathname + (q.value ? ("?q=" + encodeURIComponent(q.value.trim())) : ""));
+    if (location.search) history.replaceState(null, "", location.pathname);
     setMeta(
       "Katalog Produk Atomy Indonesia | Manfaat, Cara Pakai & Dosis HemoHIM",
       "Katalog Atomy Indonesia: manfaat, cara pakai, dan dosis HemoHIM, vitamin C Colorfood, noni fermentasi, ginseng merah, omega-3, dan Absolute CellActive."
@@ -427,6 +424,8 @@
   if (params.get("q")) {
     q.value = params.get("q");
     query = q.value.trim().toLowerCase();
+    var robotsMeta = document.querySelector('meta[name="robots"]');
+    if (robotsMeta) robotsMeta.setAttribute("content", "noindex,follow");
   }
   render();
   renderCart();

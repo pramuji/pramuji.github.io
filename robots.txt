@@ -1,3 +1,10 @@
 User-agent: *
 Allow: /
+Disallow: /index.html
+Disallow: /*/index.html
+Disallow: /katalog$
+Disallow: /*?q=
+Disallow: /*?produk=
+Disallow: /*?p=
+
 Sitemap: https://katalogatomy.online/sitemap.xml
